@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>美国办公室地址服务系统 Demo</title>
+    <style>
+      :root{--canvas:#f6f1e8;--panel:#fbf8f2;--ink:#1f2933;--soft:#55616f;--muted:#7b8794;--line:rgba(31,41,51,.1);--broker:#c76832;--tenant:#2e86ab;--admin:#33673b}
+      *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at top left,rgba(199,104,50,.12),transparent 28%),radial-gradient(circle at bottom right,rgba(46,134,171,.12),transparent 28%),var(--canvas);color:var(--ink);font-family:"Noto Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif}
+      body{padding:20px}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}
+      .wrap{max-width:1480px;margin:0 auto}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:0 16px 50px rgba(20,24,40,.06)}.hero{overflow:hidden}.bar{height:10px;background:var(--broker)}.hero-inner{padding:28px;display:grid;gap:22px}.eyebrow{font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}h1,h2,h3,p{margin:0}.title{font-size:clamp(32px,5vw,56px);line-height:1.08}.copy,.muted{color:var(--soft);line-height:1.8}
+      .tabs,.chips,.actions,.thumbs,.grid,.cards{display:flex;flex-wrap:wrap;gap:10px}.screen{display:none;margin-top:20px}.screen.active{display:block}.btn,.tab{border:1px solid var(--line);border-radius:999px;padding:10px 16px;background:#fff;font-weight:700}.tab.active{color:#fff;border-color:transparent}.tab[data-tone="broker"].active{background:var(--broker)}.tab[data-tone="tenant"].active{background:var(--tenant)}.tab[data-tone="admin"].active{background:var(--admin)}.btn.primary{background:var(--ink);color:#fff;border-color:transparent}.btn.broker{background:var(--broker);color:#fff;border-color:transparent}.btn.tenant{background:var(--tenant);color:#fff;border-color:transparent}.btn.admin{background:var(--admin);color:#fff;border-color:transparent}
+      .chip{display:inline-flex;align-items:center;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:700;background:rgba(31,41,51,.06)}.good{background:#dff7e6;color:#135d26}.warn{background:#fff1c7;color:#7a5700}.info{background:#dff1fb;color:#0d5270}
+      .cards{display:grid;gap:18px;grid-template-columns:repeat(3,minmax(0,1fr))}.layout{display:grid;gap:20px}.two{grid-template-columns:320px minmax(0,1fr)}.detail{grid-template-columns:minmax(0,1fr) 340px}.phone{border-radius:38px;background:#11161d;padding:12px}.phone-inner{border-radius:28px;background:var(--canvas);padding:16px}.notch{width:72px;height:6px;margin:0 auto 14px;border-radius:999px;background:rgba(17,22,29,.12)}
+      .stack{display:flex;flex-direction:column;gap:16px}.record,.metric,.photo{border:1px solid var(--line);border-radius:22px;background:#fff;padding:16px}.metric{background:var(--panel)}.metric .num{margin-top:10px;font-size:32px;font-weight:700}.small{font-size:12px;color:var(--muted)}.field{display:grid;gap:8px}.field-grid{display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr))}.input{width:100%;border:1px solid var(--line);border-radius:18px;padding:12px 14px;background:#fff}
+      .thumbs{margin-top:12px}.thumb{width:92px;height:72px;border-radius:16px;background-size:cover;background-position:center;border:1px solid rgba(31,41,51,.1);overflow:hidden}.thumb span{display:flex;height:100%;align-items:flex-end;padding:8px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(17,22,29,.55));color:#fff;font-size:11px;font-weight:700}.cover{height:150px;border-radius:20px;border:1px solid rgba(31,41,51,.08);background-size:cover;background-position:center}
+      .note{margin-top:12px;border-radius:20px;background:var(--panel);padding:14px 16px;color:var(--soft);line-height:1.8}.hide{display:none!important}
+      @media (max-width:1100px){.cards,.two,.detail,.field-grid{grid-template-columns:1fr}}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="card hero">
+        <div class="bar"></div>
+        <div class="hero-inner">
+          <div>
+            <div class="eyebrow">CC Monet Demo</div>
+            <h1 class="title">美国办公室地址服务系统</h1>
+            <p class="copy" style="margin-top:12px">这一版演示页已经对齐到最新结构：中介端是“账号 → My Office → 楼栋 → Suite”，租客端是免登录浏览 + 独立详情页，管理端按楼栋主表 → 楼栋详情 → 房间批量审批工作。</p>
+          </div>
+          <div class="panel" style="padding:22px">
+            <div class="tabs">
+              <a class="tab" data-route="home" data-tone="broker" href="#home">总览</a>
+              <a class="tab" data-route="broker" data-tone="broker" href="#broker">中介端</a>
+              <a class="tab" data-route="tenant" data-tone="tenant" href="#tenant">租客端</a>
+              <a class="tab" data-route="detail" data-tone="tenant" href="#detail">租客详情</a>
+              <a class="tab" data-route="admin" data-tone="admin" href="#admin">管理端</a>
+            </div>
+            <div class="note">管理端账号：<strong>admin</strong><br />管理端密码：<strong>ccMonet</strong><br />演示页里从中介端上传的图片，会同步显示到租客详情和管理端。</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="home" class="screen active">
+        <div class="cards">
+          <a class="card" href="#broker" style="padding:24px"><div class="chip info">中介端</div><h2 style="margin-top:14px">手机优先录楼栋和 Suite</h2><p class="copy" style="margin-top:10px">首页突出快速新增楼栋，楼栋下再维护 Suite 和照片。</p></a>
+          <a class="card" href="#tenant" style="padding:24px"><div class="chip info">租客端</div><h2 style="margin-top:14px">免登录浏览房源</h2><p class="copy" style="margin-top:10px">先筛选 Suite，再点详情；只有联系客服时才输入手机号。</p></a>
+          <a class="card" href="#admin" style="padding:24px"><div class="chip info">管理端</div><h2 style="margin-top:14px">按楼栋审批再看房间</h2><p class="copy" style="margin-top:10px">楼栋主表、楼栋详情、房间详情和批量审批已经分开呈现。</p></a>
+        </div>
+      </section>
+
+      <section id="broker" class="screen">
+        <div class="layout two">
+          <div class="stack">
+            <div class="phone">
+              <div class="phone-inner">
+                <div class="notch"></div>
+                <div class="stack">
+                  <div><div class="eyebrow" style="color:var(--broker)">中介账号</div><h2 style="margin-top:8px">My Office</h2><p class="copy" style="font-size:14px">首页先看楼栋，再进楼栋维护 Suite。</p></div>
+                  <button class="btn broker" style="width:100%">+ 快速新增楼栋</button>
+                  <div class="record"><strong>我的草稿箱</strong><div class="small" style="margin-top:4px">2 条待补照片</div></div>
+                  <div class="record"><strong>已提交</strong><div class="small" style="margin-top:4px">包含待审核和已审核</div></div>
+                  <div class="record"><strong>我的 Office</strong><div class="small" style="margin-top:4px">首页展示 8 条，可点更多</div></div>
+                  <div class="record"><strong>Santa Clara Tech Park</strong><div class="small" style="margin-top:4px">4701 Patrick Henry Dr, Santa Clara</div><div class="small" style="margin-top:8px">Ste 207 / Ste 217 / Ste 309</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel" style="padding:22px"><h2>规则归类</h2><div class="note">付款流程、租期、信件扫描、转寄、家具、可独立上锁、可制作公司门牌、租金包含项，都归楼栋级维护。中介端不再在录入阶段做最终地址合规判断。</div></div>
+          </div>
+
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip good">楼栋首页</span><span class="chip info">可租赁 2 套</span></div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="record"><div class="small">地址信息</div><strong>4701 Patrick Henry Dr, Santa Clara, CA 95054</strong></div>
+                <div class="record"><div class="small">关键信息</div><strong>标准付款流程：可接受</strong><div class="small" style="margin-top:6px">电费：主账单 + Suite 子账单<br />宽带：独立、公司抬头可提供<br />租金包含：物业费 / 宽带费 / 信件代收</div></div>
+              </div>
+            </div>
+
+            <div class="layout" style="grid-template-columns:1.05fr .95fr">
+              <div class="panel" style="padding:22px">
+                <h2>Suite 列表</h2>
+                <div class="record" style="margin-top:16px"><strong>Ste 207</strong><div class="small" style="margin-top:4px">319 SF · $478.50 / 月 · 适合跨境电商客户</div><div class="small" style="margin-top:8px">内部照片 <span id="suite-inside-count">3</span> 张 · 房门/门牌 <span id="suite-door-count">1</span> 张</div><div class="chips" style="margin-top:10px"><span class="chip good">可租赁</span><span class="chip info">历史注册地址已清理</span></div></div>
+                <div class="record" style="margin-top:12px"><strong>Ste 217</strong><div class="small" style="margin-top:4px">280 SF · $630 / 月</div><div class="chips" style="margin-top:10px"><span class="chip warn">待确认</span></div></div>
+              </div>
+
+              <div class="panel" style="padding:22px">
+                <h2>新增 / 编辑 Suite</h2>
+                <div class="chips" style="margin-top:14px"><span class="chip info">1 基础信息</span><span class="chip info">2 状态信息</span><span class="chip good">3 照片上传</span></div>
+                <div class="field-grid" style="margin-top:16px">
+                  <label class="field"><span class="small">Suite / 房间号</span><input class="input" value="Ste 207" /></label>
+                  <label class="field"><span class="small">Suite 状态</span><input class="input" value="可租赁" /></label>
+                </div>
+                <div class="photo" style="margin-top:16px"><strong>楼栋外围照片</strong><div class="small" style="margin-top:4px">上传后同步到后台和租客详情</div><div class="chips" style="margin-top:10px"><span class="chip info"><span id="building-exterior-count">3</span> 张</span></div><input id="up-build-ext" class="input" type="file" multiple accept="image/*" style="margin-top:12px" /><div id="grid-build-ext" class="thumbs"></div></div>
+                <div class="photo" style="margin-top:12px"><strong>楼栋门牌照片</strong><div class="chips" style="margin-top:10px"><span class="chip info"><span id="building-door-count">1</span> 张</span></div><input id="up-build-door" class="input" type="file" multiple accept="image/*" style="margin-top:12px" /><div id="grid-build-door" class="thumbs"></div></div>
+                <div class="photo" style="margin-top:12px"><strong>房间内部照片</strong><div class="chips" style="margin-top:10px"><span class="chip good"><span id="suite-inside-form-count">3</span> 张</span></div><input id="up-suite-inside" class="input" type="file" multiple accept="image/*" style="margin-top:12px" /><div id="grid-suite-inside" class="thumbs"></div></div>
+                <div class="photo" style="margin-top:12px"><strong>房门 / 门牌照片</strong><div class="chips" style="margin-top:10px"><span class="chip info"><span id="suite-door-form-count">1</span> 张</span></div><input id="up-suite-door" class="input" type="file" multiple accept="image/*" style="margin-top:12px" /><div id="grid-suite-door" class="thumbs"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tenant" class="screen">
+        <div class="cards" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <div class="metric"><div class="small">可浏览 Suite</div><div class="num">12</div><div class="muted">已审核通过且允许展示</div></div>
+          <div class="metric"><div class="small">可租赁房源</div><div class="num">8</div><div class="muted">默认优先展示</div></div>
+          <div class="metric"><div class="small">可提供宽带账单</div><div class="num">6</div><div class="muted">独立、公司抬头口径</div></div>
+        </div>
+        <div class="layout two" style="margin-top:20px">
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <h2>搜索与筛选</h2>
+              <label class="field" style="margin-top:16px"><span class="small">关键词搜索</span><input class="input" value="Santa Clara / Suite / 地址" /></label>
+              <div class="field" style="margin-top:16px"><span class="small">价格范围</span><div class="chips"><span class="chip info">$500 以下</span><span class="chip">$500-$800</span><span class="chip">$800-$1200</span></div></div>
+              <div class="field" style="margin-top:16px"><span class="small">城市</span><div class="chips"><span class="chip info">Santa Clara</span><span class="chip">San Jose</span><span class="chip">Fremont</span></div></div>
+              <div class="field" style="margin-top:16px"><span class="small">标准付款流程</span><div class="chips"><span class="chip good">可接受</span><span class="chip">不接受</span><span class="chip">待确认</span></div></div>
+              <div class="field" style="margin-top:16px"><span class="small">账单和状态</span><div class="chips"><span class="chip info">主账单 + Suite 子账单</span><span class="chip good">独立、公司抬头宽带账单</span><span class="chip good">可租赁</span></div></div>
+            </div>
+            <div class="panel" style="padding:22px"><h2>租客端逻辑</h2><div class="note">租客端直接展示 Suite 信息，点击查看详情后才带出对应楼栋信息。浏览无需登录，联系客服时再输入手机号。</div></div>
+          </div>
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">火热房源</span><span class="chip good">按浏览量最高且可租赁</span></div>
+              <div class="cards" style="margin-top:16px;grid-template-columns:repeat(3,minmax(0,1fr))">
+                <div class="record"><div id="hot-cover" class="cover"></div><strong style="display:block;margin-top:12px">Santa Clara Tech Park / Ste 207</strong><div class="small" style="margin-top:6px">$478.50 / 月 · 319 SF · 浏览量 132</div></div>
+                <div class="record"><div class="cover" style="background:linear-gradient(135deg,#dbe8f0,#fff)"></div><strong style="display:block;margin-top:12px">Fremont Gateway / Ste 118</strong><div class="small" style="margin-top:6px">$590 / 月 · 240 SF · 浏览量 118</div></div>
+                <div class="record"><div class="cover" style="background:linear-gradient(135deg,#eadbc8,#fff)"></div><strong style="display:block;margin-top:12px">Milpitas Central / Ste 12</strong><div class="small" style="margin-top:6px">$498 / 月 · 190 SF · 浏览量 101</div></div>
+              </div>
+            </div>
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">Suite 列表</span><span class="chip">首页默认展示前 8 套</span></div>
+              <div class="cards" style="margin-top:16px;grid-template-columns:repeat(2,minmax(0,1fr))">
+                <div class="record"><div id="list-cover" class="cover"></div><strong style="display:block;margin-top:12px">Santa Clara Tech Park / Ste 207</strong><div class="small" style="margin-top:6px">4701 Patrick Henry Dr, Santa Clara</div><div class="chips" style="margin-top:10px"><span class="chip good">可租赁</span><span class="chip info">标准付款流程：可接受</span><span class="chip info">电费：主账单 + Suite 子账单</span></div><div class="actions" style="margin-top:14px"><a class="btn tenant" href="#detail">查看详情</a></div></div>
+                <div class="record"><div class="cover" style="background:linear-gradient(135deg,#d7e3ec,#fff)"></div><strong style="display:block;margin-top:12px">Sunnyvale Business Hub / Ste 5A</strong><div class="small" style="margin-top:6px">1250 Borregas Ave, Sunnyvale</div><div class="chips" style="margin-top:10px"><span class="chip warn">待确认</span><span class="chip info">标准付款流程：待确认</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="detail" class="screen">
+        <div class="layout detail">
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">Suite 详情</span><span class="chip good">可租赁</span></div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="record"><div class="small">地址</div><strong>4701 Patrick Henry Dr, Santa Clara, CA 95054</strong></div>
+                <div class="record"><div class="small">月租 / 面积</div><strong>$478.50 / 月 · 319 SF</strong></div>
+                <div class="record"><div class="small">标准付款流程</div><div class="actions" style="margin-top:8px"><span class="chip good">可接受</span><button class="btn" style="padding:6px 10px" onclick="toggleNote()">?</button></div></div>
+                <div class="record"><div class="small">账单能力</div><strong>主账单 + Suite 子账单</strong><div class="small" style="margin-top:6px">独立、公司抬头宽带账单可提供</div></div>
+              </div>
+              <div id="pay-note" class="note hide">标准付款流程是：先付 1 个月押金锁定地址，客户先用该地址注册公司，注册完成后再由新公司主体签正式租赁合同并补齐租金与押金，减少平台审核时的地址不一致风险。</div>
+            </div>
+            <div class="field-grid">
+              <div class="photo"><strong>房间内部照片</strong><div id="detail-suite-inside" class="thumbs"></div></div>
+              <div class="photo"><strong>房门 / 门牌照片</strong><div id="detail-suite-door" class="thumbs"></div></div>
+              <div class="photo"><strong>楼栋外围照片</strong><div id="detail-build-ext" class="thumbs"></div></div>
+              <div class="photo"><strong>楼栋门牌照片</strong><div id="detail-build-door" class="thumbs"></div></div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="eyebrow" style="color:var(--tenant)">联系客服</div>
+              <h2 style="margin-top:8px">浏览无需登录</h2>
+              <p class="copy" style="margin-top:10px">只有在想联系后台时，才需要输入手机号进行登记。</p>
+              <div id="contact-lock" class="stack" style="margin-top:16px"><input id="contact-phone" class="input" placeholder="请输入手机号" /><button class="btn tenant" onclick="unlock()">确认并查看联系方式</button></div>
+              <div id="contact-open" class="hide"><div class="note">微信：ccMonet-service<br />电话：+1 (669) 555-0198<br />邮箱：service@ccmonet.example</div></div>
+            </div>
+            <div class="panel" style="padding:22px"><h2>楼栋共享服务</h2><div class="note">信件扫描：提供，但需要收费<br />境内 / 国际转寄：可以免费提供部分，超出部分收费<br />家具：可以付费租赁家具<br />非必需能力：可独立上锁 / 可制作专属公司门牌</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin" class="screen">
+        <div class="cards" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+          <div class="metric"><div class="small">楼栋总数</div><div class="num">24</div><div class="muted">所有录入楼栋</div></div>
+          <div class="metric"><div class="small">待审核楼栋</div><div class="num">6</div><div class="muted">优先处理对象</div></div>
+          <div class="metric"><div class="small">房间待补充</div><div class="num">9</div><div class="muted">需要回退中介补资料</div></div>
+        </div>
+        <div class="layout detail" style="margin-top:20px">
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">审核主表</span><span class="chip good">先看楼栋，再进详情</span></div>
+              <div class="record" style="margin-top:16px"><strong>Santa Clara Tech Park</strong><div class="small" style="margin-top:6px">4701 Patrick Henry Dr · 主账单 + Suite 子账单 · 维护中介：湾区合作中介 A</div><div class="chips" style="margin-top:10px"><span class="chip good">已审核通过</span><span class="chip info">3 套 / 已过审 2</span></div></div>
+              <div class="record" style="margin-top:12px"><strong>Downtown San Jose Office</strong><div class="small" style="margin-top:6px">84 W Santa Clara St · 直开独立账单 · 维护中介：硅谷合作中介 B</div><div class="chips" style="margin-top:10px"><span class="chip warn">待审核</span><span class="chip info">1 套 / 待处理 1</span></div></div>
+            </div>
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">楼栋详情</span><span class="chip good">Santa Clara Tech Park</span></div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="record"><div class="small">楼栋信息</div><strong>4701 Patrick Henry Dr, Santa Clara, CA 95054</strong><div class="small" style="margin-top:6px">付款流程：可接受 · 核验可信度：后台已复核</div></div>
+                <div class="record"><div class="small">账单提供能力</div><strong>电费：主账单 + Suite 子账单</strong><div class="small" style="margin-top:6px">宽带：独立、公司抬头可提供</div></div>
+              </div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="photo"><strong>楼栋外围照片</strong><div id="admin-build-ext" class="thumbs"></div></div>
+                <div class="photo"><strong>楼栋门牌照片</strong><div id="admin-build-door" class="thumbs"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">房间信息主表</span><span class="chip good">支持批量审批</span></div>
+              <div class="record" style="margin-top:16px"><strong>Ste 207</strong><div class="small" style="margin-top:6px">$478.50 / 月 · 319 SF</div><div class="chips" style="margin-top:10px"><span class="chip good">可租赁</span><span class="chip good">已审核通过</span></div></div>
+              <div class="record" style="margin-top:12px"><strong>Ste 217</strong><div class="small" style="margin-top:6px">$630 / 月 · 280 SF</div><div class="chips" style="margin-top:10px"><span class="chip warn">待确认</span><span class="chip warn">待补充</span></div></div>
+              <div class="actions" style="margin-top:16px"><button class="btn admin">批量通过</button><button class="btn">批量退回补充</button><button class="btn">批量标记已出租</button></div>
+            </div>
+            <div class="panel" style="padding:22px">
+              <div class="chips"><span class="chip info">房间详情</span><span class="chip good">Ste 207</span></div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="record"><div class="small">月租 / 面积</div><strong>$478.50 / 月 · 319 SF</strong></div>
+                <div class="record"><div class="small">租金包含项</div><strong>物业费 / 宽带费 / 信件代收</strong></div>
+              </div>
+              <div class="field-grid" style="margin-top:16px">
+                <div class="photo"><strong>房间内部照片</strong><div id="admin-suite-inside" class="thumbs"></div></div>
+                <div class="photo"><strong>房门 / 门牌照片</strong><div id="admin-suite-door" class="thumbs"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const photos={buildExt:[make("外围照片 1","#d6c0a7"),make("外围照片 2","#c2d3dc"),make("外围照片 3","#eadfd0")],buildDoor:[make("楼栋门牌 1","#d7dfe7")],suiteInside:[make("Suite 内景 1","#d8e6f0"),make("Suite 内景 2","#e6ddd0"),make("Suite 内景 3","#d9d7ef")],suiteDoor:[make("房门 / 门牌 1","#dfe7d4")]};
+      function make(label,tint){const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${tint}"/><stop offset="100%" stop-color="#fff"/></linearGradient></defs><rect width="800" height="600" rx="38" fill="url(#g)"/><rect x="42" y="42" width="716" height="516" rx="26" fill="rgba(255,255,255,.65)"/><text x="74" y="150" font-size="30" font-family="Arial" fill="#1f2933">CC Monet Demo Photo</text><text x="74" y="240" font-size="50" font-family="Arial" font-weight="700" fill="#1f2933">${label}</text></svg>`;return{label,url:`data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`}}
+      function thumbs(id,list){const root=document.getElementById(id);if(!root)return;root.innerHTML=list.map(item=>`<div class="thumb" style="background-image:url('${item.url}')"><span>${item.label}</span></div>`).join("")}
+      function syncPhotos(){
+        thumbs("grid-build-ext",photos.buildExt);thumbs("grid-build-door",photos.buildDoor);thumbs("grid-suite-inside",photos.suiteInside);thumbs("grid-suite-door",photos.suiteDoor);
+        thumbs("detail-build-ext",photos.buildExt);thumbs("detail-build-door",photos.buildDoor);thumbs("detail-suite-inside",photos.suiteInside);thumbs("detail-suite-door",photos.suiteDoor);
+        thumbs("admin-build-ext",photos.buildExt);thumbs("admin-build-door",photos.buildDoor);thumbs("admin-suite-inside",photos.suiteInside);thumbs("admin-suite-door",photos.suiteDoor);
+        text("building-exterior-count",photos.buildExt.length);text("building-door-count",photos.buildDoor.length);text("suite-inside-count",photos.suiteInside.length);text("suite-door-count",photos.suiteDoor.length);text("suite-inside-form-count",photos.suiteInside.length);text("suite-door-form-count",photos.suiteDoor.length);
+        const hot=document.getElementById("hot-cover"),list=document.getElementById("list-cover");if(hot)hot.style.backgroundImage=`url('${photos.suiteInside[0].url}')`;if(list)list.style.backgroundImage=`url('${photos.suiteInside[0].url}')`;
+      }
+      function text(id,val){const el=document.getElementById(id);if(el)el.textContent=String(val)}
+      function bind(inputId,key,prefix){const input=document.getElementById(inputId);if(!input)return;input.addEventListener("change",async e=>{const files=Array.from(e.target.files||[]);const add=await Promise.all(files.map((file,index)=>new Promise(resolve=>{const reader=new FileReader();reader.onload=()=>resolve({label:`${prefix} ${photos[key].length+index+1}`,url:String(reader.result||"")});reader.onerror=()=>resolve(make(`${prefix} ${photos[key].length+index+1}`,"#d8e0ea"));reader.readAsDataURL(file)})));photos[key].push(...add);syncPhotos()})}
+      function route(){const current=location.hash.replace(/^#/,"")||"home";document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===current));document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.route===current))}
+      function toggleNote(){document.getElementById("pay-note").classList.toggle("hide")}
+      function unlock(){const phone=document.getElementById("contact-phone").value.trim();if(!phone){alert("请先输入手机号。");return}document.getElementById("contact-lock").classList.add("hide");document.getElementById("contact-open").classList.remove("hide")}
+      bind("up-build-ext","buildExt","外围照片");bind("up-build-door","buildDoor","楼栋门牌");bind("up-suite-inside","suiteInside","Suite 内景");bind("up-suite-door","suiteDoor","房门 / 门牌");syncPhotos();route();window.addEventListener("hashchange",route);window.toggleNote=toggleNote;window.unlock=unlock;
+    </script>
+  </body>
+</html>
