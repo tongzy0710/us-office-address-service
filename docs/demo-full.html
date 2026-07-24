@@ -4,82 +4,1312 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>美国办公室地址服务系统 Demo</title>
-    <link rel="stylesheet" href="./demo.css?v=20260720a" />
+    <style>
+      :root {
+        --bg: #f5f1e8;
+        --panel: #fffdf8;
+        --card: #ffffff;
+        --ink: #18212b;
+        --soft: #5c6977;
+        --line: rgba(24, 33, 43, 0.11);
+        --broker: #c96d37;
+        --tenant: #2b84a5;
+        --ops: #2f6f43;
+        --accent: #11243d;
+        --green-bg: #e7f6eb;
+        --green-fg: #14532d;
+        --yellow-bg: #fff3cf;
+        --yellow-fg: #8a5a00;
+        --red-bg: #fee5e2;
+        --red-fg: #9f1c1c;
+        --blue-bg: #e3f2fb;
+        --blue-fg: #14506a;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(circle at top left, rgba(201,109,55,.14), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(43,132,165,.14), transparent 32%),
+          var(--bg);
+        color: var(--ink);
+        font-family: "PingFang SC", "Noto Sans SC", "Hiragino Sans GB", system-ui, sans-serif;
+      }
+
+      body { padding: 18px; }
+      h1, h2, h3, h4, p { margin: 0; }
+      button, input, select, textarea { font: inherit; }
+      button { cursor: pointer; }
+
+      .app {
+        max-width: 1460px;
+        margin: 0 auto;
+      }
+
+      .hero, .card, .panel, .phone, .modal-card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 18px 48px rgba(20, 24, 40, 0.07);
+      }
+
+      .hero {
+        overflow: hidden;
+      }
+
+      .hero-top {
+        height: 10px;
+        background: linear-gradient(90deg, var(--broker), var(--tenant), var(--ops));
+      }
+
+      .hero-inner {
+        padding: 28px;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: minmax(0, 1.3fr) minmax(340px, .7fr);
+      }
+
+      .eyebrow {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .26em;
+        text-transform: uppercase;
+        color: var(--soft);
+      }
+
+      .title {
+        margin-top: 14px;
+        font-size: clamp(30px, 5vw, 54px);
+        line-height: 1.04;
+        letter-spacing: -.02em;
+      }
+
+      .copy, .muted {
+        color: var(--soft);
+        line-height: 1.85;
+      }
+
+      .tabs, .chips, .actions, .legend, .stat-row, .quick-pills, .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .tab, .btn, .pill {
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: white;
+        padding: 10px 16px;
+        font-weight: 700;
+      }
+
+      .tab.active {
+        color: white;
+        border-color: transparent;
+      }
+
+      .tab[data-route="overview"].active { background: var(--accent); }
+      .tab[data-route="broker"].active { background: var(--broker); }
+      .tab[data-route="tenant"].active { background: var(--tenant); }
+      .tab[data-route="ops"].active { background: var(--ops); }
+
+      .btn.primary { background: var(--accent); color: white; border-color: transparent; }
+      .btn.broker { background: var(--broker); color: white; border-color: transparent; }
+      .btn.tenant { background: var(--tenant); color: white; border-color: transparent; }
+      .btn.ops { background: var(--ops); color: white; border-color: transparent; }
+      .btn.subtle { background: var(--panel); }
+
+      .pill {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .pill.green { background: var(--green-bg); color: var(--green-fg); }
+      .pill.yellow { background: var(--yellow-bg); color: var(--yellow-fg); }
+      .pill.red { background: var(--red-bg); color: var(--red-fg); }
+      .pill.blue { background: var(--blue-bg); color: var(--blue-fg); }
+
+      .screen {
+        display: none;
+        margin-top: 20px;
+      }
+
+      .screen.active { display: block; }
+
+      .grid-3 {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .grid-2 {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+
+      .layout {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 360px minmax(0, 1fr);
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .metric {
+        padding: 20px;
+        background: var(--panel);
+      }
+
+      .metric .number {
+        margin-top: 12px;
+        font-size: 34px;
+        font-weight: 800;
+      }
+
+      .metric .small {
+        margin-top: 8px;
+        color: var(--soft);
+        font-size: 13px;
+      }
+
+      .record {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: white;
+      }
+
+      .record h3 {
+        font-size: 20px;
+      }
+
+      .field-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      label {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .helper {
+        font-size: 12px;
+        color: var(--soft);
+      }
+
+      .input, .select, .textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 12px 14px;
+        background: white;
+      }
+
+      .textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      .note {
+        border-radius: 20px;
+        background: var(--panel);
+        padding: 14px 16px;
+        color: var(--soft);
+        line-height: 1.8;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .phone {
+        background: #10161d;
+        padding: 12px;
+        border-radius: 36px;
+      }
+
+      .phone-inner {
+        background: var(--bg);
+        border-radius: 26px;
+        padding: 16px;
+      }
+
+      .notch {
+        width: 72px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(16, 22, 29, .12);
+        margin: 0 auto 14px;
+      }
+
+      .light {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 800;
+      }
+
+      .light::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .light.green { background: var(--green-bg); color: var(--green-fg); }
+      .light.yellow { background: var(--yellow-bg); color: var(--yellow-fg); }
+      .light.red { background: var(--red-bg); color: var(--red-fg); }
+
+      .checklist {
+        display: grid;
+        gap: 10px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: white;
+      }
+
+      .check-item small {
+        display: block;
+        margin-top: 4px;
+        color: var(--soft);
+      }
+
+      .switch {
+        min-width: 54px;
+        height: 32px;
+        padding: 4px;
+        border-radius: 999px;
+        background: rgba(24, 33, 43, .14);
+        position: relative;
+        border: none;
+      }
+
+      .switch::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,.18);
+        transition: transform .18s ease;
+      }
+
+      .switch.on { background: var(--accent); }
+      .switch.on::after { transform: translateX(22px); }
+
+      .progress {
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(24, 33, 43, .08);
+        overflow: hidden;
+      }
+
+      .progress > span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--broker), var(--tenant));
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th, .table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .table th {
+        color: var(--soft);
+        font-size: 12px;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+
+      .listing-card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: white;
+        display: grid;
+        gap: 12px;
+      }
+
+      .listing-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .price {
+        font-size: 28px;
+        font-weight: 800;
+      }
+
+      .cover {
+        height: 180px;
+        border-radius: 20px;
+        background:
+          linear-gradient(135deg, rgba(201,109,55,.22), rgba(43,132,165,.12)),
+          linear-gradient(180deg, #fdf6ef, #ffffff);
+        border: 1px solid rgba(24,33,43,.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cover::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 16px;
+        bottom: 16px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.92);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .home-link {
+        display: block;
+        padding: 24px;
+      }
+
+      .accent-bar {
+        width: 92px;
+        height: 10px;
+        border-radius: 999px;
+      }
+
+      .queue-item {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: white;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(16,22,29,.42);
+        z-index: 50;
+      }
+
+      .modal.active { display: flex; }
+
+      .modal-card {
+        width: min(680px, 100%);
+        padding: 24px;
+      }
+
+      .share-card {
+        border-radius: 28px;
+        background:
+          linear-gradient(135deg, rgba(201,109,55,.9), rgba(17,36,61,.96));
+        padding: 24px;
+        color: white;
+      }
+
+      .share-card .share-title {
+        margin-top: 10px;
+        font-size: 30px;
+        line-height: 1.1;
+      }
+
+      .share-grid {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .share-cell {
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 18px;
+        padding: 14px;
+      }
+
+      .muted-white {
+        color: rgba(255,255,255,.82);
+      }
+
+      .empty {
+        padding: 26px 18px;
+        text-align: center;
+        color: var(--soft);
+        border: 1px dashed var(--line);
+        border-radius: 20px;
+      }
+
+      @media (max-width: 1160px) {
+        .hero-inner, .layout, .grid-2, .grid-3, .field-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 780px) {
+        body { padding: 12px; }
+        .hero-inner, .section, .home-link, .metric { padding: 18px; }
+        .title { font-size: 34px; }
+        .price { font-size: 24px; }
+      }
+    </style>
   </head>
   <body>
-    <div class="wrap">
-      <section class="card hero">
-        <div class="hero-bar"></div>
+    <div class="app">
+      <section class="hero">
+        <div class="hero-top"></div>
         <div class="hero-inner">
           <div>
-            <div class="eyebrow">CC Monet Demo</div>
-            <h1 class="title">美国办公室地址服务系统</h1>
-            <p class="copy" style="margin-top: 12px">
-              这一版不再只是流程说明，而是三端都可以点进去操作的工作台演示。你可以直接切换楼栋、录入 Suite、上传照片、查看租客详情，以及在管理端做批量审核。
+            <div class="eyebrow">CC Monet Product Demo</div>
+            <h1 class="title">合规办公室平台 Demo</h1>
+            <p class="copy" style="margin-top: 14px;">
+              这版 demo 完全按照最新产品方案重做，重点展示物业前置自动预审、物业级与房间级分层、必录项与非必录项、自动上架与例外人工介入、租客匿名浏览与留资、以及渠道转发卡片。
             </p>
+            <div class="legend" style="margin-top: 18px;">
+              <span class="pill green">绿灯：适合继续录入</span>
+              <span class="pill yellow">黄灯：可补充再判断</span>
+              <span class="pill red">红灯：不建议继续</span>
+              <span class="pill blue">自动上架：达到分数线后无需等待</span>
+            </div>
           </div>
-          <div class="panel" style="padding: 22px">
+          <div class="panel section">
             <div class="tabs">
-              <button class="tab" data-route="home">总览</button>
+              <button class="tab active" data-route="overview">总览</button>
               <button class="tab" data-route="broker">中介端</button>
               <button class="tab" data-route="tenant">租客端</button>
-              <button class="tab" data-route="admin">管理端</button>
+              <button class="tab" data-route="ops">运营端</button>
             </div>
-            <div class="note" style="margin-top: 16px">
-              管理端账号：<strong>admin</strong><br />
-              管理端密码：<strong>ccMonet</strong><br />
-              中介端上传并保存的照片，会同步显示到租客端详情页和管理端详情页。
+            <div class="note" style="margin-top: 18px;">
+              你可以直接切换三端，模拟“地址输入后自动预审”“逐步补资料后分数提升”“达到阈值自动上架”“低分例外进入人工确认”“租客留资后才展示联系方式”“生成渠道转发卡片”等关键流程。
+            </div>
+            <div class="stat-row" style="margin-top: 18px;">
+              <div class="pill blue">PC 主操作：租客端 / 运营端</div>
+              <div class="pill blue">手机友好：中介端</div>
+              <div class="pill blue">无须每一步等待审批</div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="home" class="screen active">
-        <div class="cards">
-          <a class="card home-link" href="#broker">
-            <div class="accent-bar" style="background: var(--broker)"></div>
-            <h2 style="margin-top: 16px">中介端</h2>
-            <p class="copy" style="margin-top: 10px">
-              手机优先结构，首页一眼就能看到“新增楼栋”，再进入楼栋下维护 Suite 和图片。
-            </p>
-          </a>
-          <a class="card home-link" href="#tenant">
-            <div class="accent-bar" style="background: var(--tenant)"></div>
-            <h2 style="margin-top: 16px">租客端</h2>
-            <p class="copy" style="margin-top: 10px">
-              免登录浏览房源，先看 Suite 列表，点击详情后再带出楼栋能力和全部照片。
-            </p>
-          </a>
-          <a class="card home-link" href="#admin">
-            <div class="accent-bar" style="background: var(--admin)"></div>
-            <h2 style="margin-top: 16px">管理端</h2>
-            <p class="copy" style="margin-top: 10px">
-              先按楼栋审核，再看房间详情，可批量通过、退回补充或标记已出租。
-            </p>
-          </a>
-        </div>
-      </section>
-
-      <section id="broker" class="screen">
-        <div id="broker-app"></div>
-      </section>
-
-      <section id="tenant" class="screen">
-        <div id="tenant-app"></div>
-      </section>
-
-      <section id="admin" class="screen">
-        <div id="admin-app"></div>
-      </section>
+      <section id="overview" class="screen active"></section>
+      <section id="broker" class="screen"></section>
+      <section id="tenant" class="screen"></section>
+      <section id="ops" class="screen"></section>
     </div>
 
-    <div id="tenant-modal" class="modal">
-      <div class="modal-card" id="tenant-modal-card"></div>
+    <div class="modal" id="modal">
+      <div class="modal-card" id="modal-card"></div>
     </div>
 
-    <script src="./demo-data.js?v=20260720a"></script>
-    <script src="./demo-render-a.js?v=20260720a"></script>
-    <script src="./demo-render-b.js?v=20260720a"></script>
-    <script src="./demo-events.js?v=20260720a"></script>
+    <script>
+      const propertyTemplates = {
+        green: {
+          id: "p-green",
+          name: "Santa Clara Tech Park",
+          address: "4701 Patrick Henry Dr, Santa Clara, CA 95054",
+          city: "Santa Clara",
+          propertyType: "独立办公室物业",
+          operatingAllowed: true,
+          leaseAllowed: true,
+          videoSupport: true,
+          billsIncluded: ["物业费", "宽带费", "收件费"],
+          extraFee: "若客户要求独立电表或额外网络专线，按物业方案另行报价。",
+          paymentFlow: "接受",
+          score: 82,
+          light: "green",
+          room: {
+            suite: "Ste 207",
+            area: 319,
+            rent: 478.5,
+            available: true,
+            furnished: true,
+            priorRegistered: true,
+            cleared: true,
+            status: "可展示",
+            listingScore: 86
+          }
+        },
+        yellow: {
+          id: "p-yellow",
+          name: "Fremont Gateway Center",
+          address: "4288 Stevenson Blvd, Fremont, CA 94538",
+          city: "Fremont",
+          propertyType: "办公室物业",
+          operatingAllowed: true,
+          leaseAllowed: true,
+          videoSupport: false,
+          billsIncluded: ["物业费", "保险费"],
+          extraFee: "若需要额外收件和网络支持，需要单独加费。",
+          paymentFlow: "待确认",
+          score: 63,
+          light: "yellow",
+          room: {
+            suite: "Ste 118",
+            area: 240,
+            rent: 590,
+            available: true,
+            furnished: false,
+            priorRegistered: false,
+            cleared: false,
+            status: "待补充",
+            listingScore: 68
+          }
+        },
+        red: {
+          id: "p-red",
+          name: "Sunnyvale Business Hub",
+          address: "1250 Borregas Ave, Sunnyvale, CA 94089",
+          city: "Sunnyvale",
+          propertyType: "混合物业",
+          operatingAllowed: false,
+          leaseAllowed: false,
+          videoSupport: false,
+          billsIncluded: ["物业费"],
+          extraFee: "暂未确认任何额外服务方案。",
+          paymentFlow: "不接受",
+          score: 34,
+          light: "red",
+          room: {
+            suite: "Ste 5A",
+            area: 225,
+            rent: 720,
+            available: false,
+            furnished: false,
+            priorRegistered: true,
+            cleared: false,
+            status: "暂停推荐",
+            listingScore: 28
+          }
+        }
+      };
+
+      const state = {
+        route: "overview",
+        activeTemplate: "green",
+        precheckAddress: propertyTemplates.green.address,
+        required: {
+          propertyName: true,
+          address: true,
+          propertyType: true,
+          operatingAllowed: true,
+          leaseAllowed: true,
+          suite: true,
+          area: true,
+          rent: true,
+          available: true,
+          priorRegistered: true,
+          cleared: true
+        },
+        optional: {
+          videoSupport: true,
+          furnished: true,
+          extraFee: true,
+          paymentFlow: true,
+          photoSet: false,
+          shareCard: false
+        },
+        filters: {
+          city: "全部",
+          paymentFlow: "全部",
+          status: "全部"
+        },
+        selectedTenantId: "p-green",
+        leadUnlocked: false,
+        leadName: "",
+        leadPhone: "",
+        opsDecision: {
+          "p-yellow": "待人工确认",
+          "p-red": "退回补充"
+        }
+      };
+
+      function currentProperty() {
+        return propertyTemplates[state.activeTemplate];
+      }
+
+      function allProperties() {
+        return Object.values(propertyTemplates);
+      }
+
+      function scoreBreakdown(property) {
+        const requiredCount = Object.values(state.required).filter(Boolean).length;
+        const optionalCount = Object.values(state.optional).filter(Boolean).length;
+        const requiredScore = Math.round(requiredCount / 11 * 70);
+        const optionalScore = Math.round(optionalCount / 6 * 20);
+        const templateBase = property.light === "green" ? 10 : property.light === "yellow" ? 0 : -15;
+        const total = Math.max(0, Math.min(100, requiredScore + optionalScore + templateBase));
+        return {
+          requiredCount,
+          optionalCount,
+          total,
+          canAutoPublish: requiredCount === 11 && total >= 75 && property.light !== "red",
+          needsManual: total < 75 || property.light === "red"
+        };
+      }
+
+      function trafficLight(total, property) {
+        if (property.light === "red" || total < 45) return { key: "red", text: "红灯：当前不建议继续作为平台地址推进" };
+        if (property.light === "yellow" || total < 75) return { key: "yellow", text: "黄灯：可继续补资料，暂不建议直接自动上架" };
+        return { key: "green", text: "绿灯：当前可继续录入，并满足自动上架条件" };
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function money(v) {
+        return "$" + Number(v).toLocaleString("en-US", {
+          minimumFractionDigits: Number(v) % 1 ? 2 : 0,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function pill(text, color) {
+        return `<span class="pill ${color}">${escapeHtml(text)}</span>`;
+      }
+
+      function screen(id) {
+        return document.getElementById(id);
+      }
+
+      function renderTabs() {
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.toggle("active", tab.dataset.route === state.route);
+        });
+        document.querySelectorAll(".screen").forEach((el) => {
+          el.classList.toggle("active", el.id === state.route);
+        });
+      }
+
+      function renderOverview() {
+        const stats = allProperties();
+        const autoCount = stats.filter((item) => scoreBreakdown(item).canAutoPublish).length;
+        const manualCount = stats.filter((item) => scoreBreakdown(item).needsManual).length;
+        screen("overview").innerHTML = `
+          <div class="grid-3">
+            <div class="metric card">
+              <div class="eyebrow">Property</div>
+              <div class="number">${stats.length}</div>
+              <div class="small">当前演示中的物业样本数</div>
+            </div>
+            <div class="metric card">
+              <div class="eyebrow">Auto Publish</div>
+              <div class="number">${autoCount}</div>
+              <div class="small">达到自动上架线，无需运营介入</div>
+            </div>
+            <div class="metric card">
+              <div class="eyebrow">Manual Review</div>
+              <div class="number">${manualCount}</div>
+              <div class="small">低分或命中风险，进入例外人工确认</div>
+            </div>
+          </div>
+          <div class="grid-3" style="margin-top:18px;">
+            <a class="card home-link" href="#broker" data-jump="broker">
+              <div class="accent-bar" style="background:var(--broker)"></div>
+              <h2 style="margin-top:16px;">中介端</h2>
+              <p class="copy" style="margin-top:10px;">先输地址就给出绿灯、黄灯、红灯；不需要等审批；边补资料边涨分。</p>
+            </a>
+            <a class="card home-link" href="#tenant" data-jump="tenant">
+              <div class="accent-bar" style="background:var(--tenant)"></div>
+              <h2 style="margin-top:16px;">租客端</h2>
+              <p class="copy" style="margin-top:10px;">先匿名浏览和筛选，不展示电话；有意向再留资，保护渠道关系。</p>
+            </a>
+            <a class="card home-link" href="#ops" data-jump="ops">
+              <div class="accent-bar" style="background:var(--ops)"></div>
+              <h2 style="margin-top:16px;">运营端</h2>
+              <p class="copy" style="margin-top:10px;">只处理低分例外和高风险冲突，不介入每一步录入，不做全流程瓶颈。</p>
+            </a>
+          </div>
+          <div class="grid-2" style="margin-top:18px;">
+            <div class="card section">
+              <div class="section-title"><h3>这版 demo 的核心交互</h3></div>
+              <div class="stack" style="margin-top:16px;">
+                <div class="record">
+                  <strong>1. 物业前置自动预审</strong>
+                  <p class="copy" style="margin-top:8px;">输入地址后系统立刻给结论，不需要运营先审核，中介自己决定要不要继续。</p>
+                </div>
+                <div class="record">
+                  <strong>2. 物业级和房间级分层</strong>
+                  <p class="copy" style="margin-top:8px;">账单包含项、付款流程、视频核验支持等跟物业走；租金、面积、清退状态跟房间走。</p>
+                </div>
+                <div class="record">
+                  <strong>3. 必录项驱动自动上架</strong>
+                  <p class="copy" style="margin-top:8px;">不是所有内容录完才能上架，而是主要信息录齐、分数过线、且没有红线时自动上架。</p>
+                </div>
+              </div>
+            </div>
+            <div class="card section">
+              <div class="section-title"><h3>适合当前业务阶段的原因</h3></div>
+              <div class="stack" style="margin-top:16px;">
+                <div class="record">
+                  <strong>轻运营</strong>
+                  <p class="copy" style="margin-top:8px;">大多数房源自动判断，少数例外再人工介入。</p>
+                </div>
+                <div class="record">
+                  <strong>手机友好</strong>
+                  <p class="copy" style="margin-top:8px;">中介只要先录核心项，不被长表单和复杂联动压住。</p>
+                </div>
+                <div class="record">
+                  <strong>渠道可转发</strong>
+                  <p class="copy" style="margin-top:8px;">房源可生成分享卡片，客户看房源但默认看不到直联方式。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderBroker() {
+        const property = currentProperty();
+        const score = scoreBreakdown(property);
+        const light = trafficLight(score.total, property);
+        const requiredRows = [
+          ["物业名称", "用于识别物业主体", "propertyName"],
+          ["物业地址", "预审第一输入项", "address"],
+          ["物业类型", "决定是否属于办公物业", "propertyType"],
+          ["是否允许作为经营地址", "直接影响是否适合目标客户", "operatingAllowed"],
+          ["是否可签租约", "决定能否进入后续流程", "leaseAllowed"],
+          ["房号 / Suite", "房间最小可交易单元", "suite"],
+          ["面积", "影响筛选与报价", "area"],
+          ["租金", "房间级核心交易信息", "rent"],
+          ["是否可租", "决定能否上架", "available"],
+          ["是否曾作为注册地址", "影响客户判断", "priorRegistered"],
+          ["是否已清退", "若曾使用，必须说明是否清退", "cleared"]
+        ];
+        const optionalRows = [
+          ["支持视频核验", "提高平台适配度", "videoSupport"],
+          ["是否有家具", "提升成交效率", "furnished"],
+          ["额外费用说明", "帮助客户理解真实成本", "extraFee"],
+          ["标准付款流程", "是否接受先锁地址再注册公司", "paymentFlow"],
+          ["照片组", "增强信任和可转发性", "photoSet"],
+          ["转发卡片", "便于渠道传播", "shareCard"]
+        ];
+
+        screen("broker").innerHTML = `
+          <div class="layout">
+            <div class="stack">
+              <div class="phone">
+                <div class="phone-inner">
+                  <div class="notch"></div>
+                  <div class="section" style="padding:0;">
+                    <div class="eyebrow">Broker Mobile</div>
+                    <h3 style="margin-top:10px;">物业录入与自动预审</h3>
+                    <p class="copy" style="margin-top:8px;">手机上先录地址，先判断值不值得继续，再慢慢补资料。</p>
+                    <div class="quick-pills" style="margin-top:14px;">
+                      <button class="btn subtle sample-btn" data-sample="green">样本 A：绿灯</button>
+                      <button class="btn subtle sample-btn" data-sample="yellow">样本 B：黄灯</button>
+                      <button class="btn subtle sample-btn" data-sample="red">样本 C：红灯</button>
+                    </div>
+                    <div class="field" style="margin-top:14px;">
+                      <label>物业地址</label>
+                      <input class="input" id="addressInput" value="${escapeHtml(property.address)}" />
+                    </div>
+                    <div class="actions" style="margin-top:14px;">
+                      <button class="btn broker" id="runPrecheck">开始自动预审</button>
+                      <button class="btn subtle" id="openShareCard">生成转发卡片</button>
+                    </div>
+                    <div style="margin-top:16px;" class="light ${light.key}">${light.text}</div>
+                    <div class="note" style="margin-top:14px;">
+                      当前判断理由：${property.light === "green" ? "物业条件完整，支持经营地址、租约和视频配合，可继续录入并满足自动上架。" : property.light === "yellow" ? "基础方向可做，但标准付款流程和部分支持条件仍需补充，不建议直接自动上架。" : "经营用途和租约条件不稳，且标准付款流程不接受，当前不建议继续主推。"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card section">
+                <div class="section-title">
+                  <h3>自动上架判断</h3>
+                  ${light.key === "green" && score.canAutoPublish ? pill("已达到自动上架线", "blue") : pill("仍需补充或人工确认", light.key)}
+                </div>
+                <div style="margin-top:16px;" class="progress"><span style="width:${score.total}%"></span></div>
+                <div class="stat-row" style="margin-top:12px;">
+                  <div class="pill blue">当前总分 ${score.total}</div>
+                  <div class="pill blue">必录项 ${score.requiredCount}/11</div>
+                  <div class="pill blue">增强项 ${score.optionalCount}/6</div>
+                </div>
+                <div class="note" style="margin-top:14px;">
+                  规则：只要必录项齐全、分数达到 75 分以上、且没有命中红灯，就可以自动上架。低于阈值或命中风险，再进入运营端例外确认。
+                </div>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="card section">
+                <div class="section-title">
+                  <h3>物业级信息</h3>
+                  ${pill(property.name, "blue")}
+                </div>
+                <div class="field-grid" style="margin-top:16px;">
+                  <div class="field">
+                    <label>物业类型</label>
+                    <div class="input">${property.propertyType}</div>
+                  </div>
+                  <div class="field">
+                    <label>是否接受标准付款流程 <button class="pill-link" id="paymentHintBtn" type="button">?</button></label>
+                    <div class="input">${property.paymentFlow}</div>
+                  </div>
+                  <div class="field">
+                    <label>房租是否包含</label>
+                    <div class="input">${property.billsIncluded.join("、") || "暂未填写"}</div>
+                  </div>
+                  <div class="field">
+                    <label>额外费用说明</label>
+                    <div class="input">${property.extraFee}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="card section">
+                  <div class="section-title"><h3>必录项</h3>${pill("决定能不能判断与上架", "blue")}</div>
+                  <div class="checklist" style="margin-top:16px;">
+                    ${requiredRows.map(([title, desc, key]) => `
+                      <div class="check-item">
+                        <div>
+                          <strong>${title}</strong>
+                          <small>${desc}</small>
+                        </div>
+                        <button class="switch ${state.required[key] ? "on" : ""}" data-kind="required" data-key="${key}"></button>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+                <div class="card section">
+                  <div class="section-title"><h3>非必录增强项</h3>${pill("提高分数与成交效率", "blue")}</div>
+                  <div class="checklist" style="margin-top:16px;">
+                    ${optionalRows.map(([title, desc, key]) => `
+                      <div class="check-item">
+                        <div>
+                          <strong>${title}</strong>
+                          <small>${desc}</small>
+                        </div>
+                        <button class="switch ${state.optional[key] ? "on" : ""}" data-kind="optional" data-key="${key}"></button>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              </div>
+              <div class="card section">
+                <div class="section-title">
+                  <h3>房间级信息</h3>
+                  ${pill(property.room.suite, light.key)}
+                </div>
+                <table class="table" style="margin-top:12px;">
+                  <tr><th>字段</th><th>值</th><th>说明</th></tr>
+                  <tr><td>租金</td><td>${money(property.room.rent)}/月</td><td>房租一定跟着房间走</td></tr>
+                  <tr><td>面积</td><td>${property.room.area} sqft</td><td>用于筛选与比较</td></tr>
+                  <tr><td>是否可租</td><td>${property.room.available ? "可租" : "暂不可租"}</td><td>决定能否上架</td></tr>
+                  <tr><td>是否有家具</td><td>${property.room.furnished ? "有" : "无"}</td><td>影响成交，但不一定是必录项</td></tr>
+                  <tr><td>曾做注册地址</td><td>${property.room.priorRegistered ? "是" : "否"}</td><td>若为是，必须补清退信息</td></tr>
+                  <tr><td>是否已清退</td><td>${property.room.priorRegistered ? (property.room.cleared ? "已清退" : "未清退") : "不适用"}</td><td>未清退会显著影响判断</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function filteredTenantItems() {
+        return allProperties().filter((item) => {
+          if (state.filters.city !== "全部" && item.city !== state.filters.city) return false;
+          if (state.filters.paymentFlow !== "全部" && item.paymentFlow !== state.filters.paymentFlow) return false;
+          if (state.filters.status !== "全部" && item.room.status !== state.filters.status) return false;
+          return true;
+        });
+      }
+
+      function renderTenant() {
+        const items = filteredTenantItems();
+        const selected = allProperties().find((item) => item.id === state.selectedTenantId) || items[0] || allProperties()[0];
+        screen("tenant").innerHTML = `
+          <div class="grid-2">
+            <div class="card section">
+              <div class="section-title">
+                <h3>租客端房源浏览</h3>
+                ${pill("默认不展示电话", "blue")}
+              </div>
+              <p class="copy" style="margin-top:8px;">客户先看房源，不需要先留电话；当点击“我要租这个房间”后，再通过留资进入后续跟进。</p>
+              <div class="filter-row" style="margin-top:16px;">
+                <select class="select" id="tenantCity" style="max-width:180px;">
+                  ${["全部", ...new Set(allProperties().map((item) => item.city))].map((city) => `<option ${state.filters.city===city?"selected":""}>${city}</option>`).join("")}
+                </select>
+                <select class="select" id="tenantPayment" style="max-width:220px;">
+                  ${["全部", "接受", "待确认", "不接受"].map((v) => `<option ${state.filters.paymentFlow===v?"selected":""}>${v}</option>`).join("")}
+                </select>
+                <select class="select" id="tenantStatus" style="max-width:220px;">
+                  ${["全部", "可展示", "待补充", "暂停推荐"].map((v) => `<option ${state.filters.status===v?"selected":""}>${v}</option>`).join("")}
+                </select>
+              </div>
+              <div class="stack" style="margin-top:18px;">
+                ${items.map((item) => {
+                  const score = scoreBreakdown(item);
+                  const light = trafficLight(score.total, item);
+                  return `
+                    <div class="listing-card">
+                      <div class="cover" data-label="${escapeHtml(item.room.suite)}"></div>
+                      <div class="listing-top">
+                        <div>
+                          <h3>${item.name}</h3>
+                          <div class="copy" style="margin-top:6px;">${item.address}</div>
+                        </div>
+                        <div>
+                          <div class="price">${money(item.room.rent)}</div>
+                          <div class="helper">${item.room.area} sqft</div>
+                        </div>
+                      </div>
+                      <div class="chips">
+                        ${pill(light.key === "green" ? "适合继续推进" : light.key === "yellow" ? "需补资料" : "不建议主推", light.key)}
+                        ${pill("标准付款流程：" + item.paymentFlow, item.paymentFlow === "接受" ? "green" : item.paymentFlow === "待确认" ? "yellow" : "red")}
+                        ${pill(item.room.status, item.room.status === "可展示" ? "green" : item.room.status === "待补充" ? "yellow" : "red")}
+                      </div>
+                      <div class="copy">租金由房间决定；费用包含和标准付款流程由物业统一决定。</div>
+                      <div class="actions">
+                        <button class="btn tenant tenant-detail" data-id="${item.id}">查看详情</button>
+                        <button class="btn subtle tenant-share" data-id="${item.id}">查看转发卡片</button>
+                      </div>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+            <div class="card section">
+              <div class="section-title">
+                <h3>房源详情</h3>
+                ${selected ? pill(selected.room.suite, selected.light === "green" ? "green" : selected.light === "yellow" ? "yellow" : "red") : ""}
+              </div>
+              ${selected ? `
+                <div class="cover" data-label="${escapeHtml(selected.name)}" style="margin-top:16px;"></div>
+                <div class="stack" style="margin-top:16px;">
+                  <div class="record">
+                    <strong>${selected.name} · ${selected.room.suite}</strong>
+                    <p class="copy" style="margin-top:8px;">${selected.address}</p>
+                    <div class="chips" style="margin-top:12px;">
+                      ${pill("月租 " + money(selected.room.rent), "blue")}
+                      ${pill("面积 " + selected.room.area + " sqft", "blue")}
+                      ${pill("标准付款流程：" + selected.paymentFlow, selected.paymentFlow === "接受" ? "green" : selected.paymentFlow === "待确认" ? "yellow" : "red")}
+                    </div>
+                  </div>
+                  <div class="record">
+                    <strong>物业级统一条件</strong>
+                    <p class="copy" style="margin-top:8px;">房租包含：${selected.billsIncluded.join("、") || "暂未填写"}</p>
+                    <p class="copy" style="margin-top:8px;">额外费用：${selected.extraFee}</p>
+                  </div>
+                  <div class="record">
+                    <strong>匿名浏览模式</strong>
+                    <p class="copy" style="margin-top:8px;">当前不展示平台电话。只有真正点“我要租这个房间”并留资后，才进入后续沟通。</p>
+                    ${state.leadUnlocked ? `
+                      <div class="note" style="margin-top:12px;">
+                        已登记意向：${escapeHtml(state.leadName)} / ${escapeHtml(state.leadPhone)}<br />
+                        后续展示给渠道的仍是房源信息，不直接暴露平台联系方式。
+                      </div>
+                    ` : `
+                      <div class="field-grid" style="margin-top:12px;">
+                        <div class="field">
+                          <label>姓名</label>
+                          <input class="input" id="leadName" value="${escapeHtml(state.leadName)}" placeholder="请输入姓名" />
+                        </div>
+                        <div class="field">
+                          <label>电话</label>
+                          <input class="input" id="leadPhone" value="${escapeHtml(state.leadPhone)}" placeholder="请输入电话" />
+                        </div>
+                      </div>
+                      <div class="actions" style="margin-top:12px;">
+                        <button class="btn tenant" id="unlockLead">我要租这个房间</button>
+                      </div>
+                    `}
+                  </div>
+                </div>
+              ` : `<div class="empty" style="margin-top:16px;">暂无可展示房源</div>`}
+            </div>
+          </div>
+        `;
+      }
+
+      function renderOps() {
+        const queue = allProperties()
+          .map((item) => ({ item, score: scoreBreakdown(item), light: trafficLight(scoreBreakdown(item).total, item) }))
+          .filter((row) => !row.score.canAutoPublish || row.light.key !== "green");
+
+        screen("ops").innerHTML = `
+          <div class="grid-2">
+            <div class="card section">
+              <div class="section-title">
+                <h3>待人工确认队列</h3>
+                ${pill("只处理例外，不审批全部流程", "blue")}
+              </div>
+              <div class="stack" style="margin-top:16px;">
+                ${queue.map(({ item, score, light }) => `
+                  <div class="queue-item">
+                    <div class="section-title">
+                      <strong>${item.name}</strong>
+                      ${pill(light.key === "red" ? "高风险" : "需补资料", light.key)}
+                    </div>
+                    <div class="copy">${item.address}</div>
+                    <div class="chips">
+                      ${pill("当前分数 " + score.total, "blue")}
+                      ${pill("标准付款流程：" + item.paymentFlow, item.paymentFlow === "接受" ? "green" : item.paymentFlow === "待确认" ? "yellow" : "red")}
+                      ${pill("房间状态：" + item.room.status, item.room.status === "可展示" ? "green" : item.room.status === "待补充" ? "yellow" : "red")}
+                    </div>
+                    <div class="note">${item.light === "red" ? "当前红灯，建议中介先停在录入阶段，不要浪费更多时间补大量资料。" : "当前黄灯，允许继续补录；只有当中介坚持提交时，运营再做例外确认。"} </div>
+                    <div class="actions">
+                      <button class="btn ops ops-approve" data-id="${item.id}">人工放行</button>
+                      <button class="btn subtle ops-return" data-id="${item.id}">退回补充</button>
+                    </div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+            <div class="card section">
+              <div class="section-title">
+                <h3>运营端规则摘要</h3>
+                ${pill("轻运营", "blue")}
+              </div>
+              <div class="stack" style="margin-top:16px;">
+                <div class="record">
+                  <strong>系统先做判断</strong>
+                  <p class="copy" style="margin-top:8px;">物业输入后就返回绿灯、黄灯、红灯。中介继续补录时，不需要等待运营确认。</p>
+                </div>
+                <div class="record">
+                  <strong>自动上架优先</strong>
+                  <p class="copy" style="margin-top:8px;">当必录项齐全、分数达到 75 分以上、且没有红线时，系统直接上架，不进入人工流。</p>
+                </div>
+                <div class="record">
+                  <strong>人工只处理三类情况</strong>
+                  <p class="copy" style="margin-top:8px;">一是低分但中介坚持提交；二是字段冲突或明显高风险；三是上线后客户反馈异常，需要复核。</p>
+                </div>
+                <div class="record">
+                  <strong>保护业务节奏</strong>
+                  <p class="copy" style="margin-top:8px;">运营是兜底层，不是前置路障。系统的设计目标是让审批不成为最大的瓶颈。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function render() {
+        renderTabs();
+        renderOverview();
+        renderBroker();
+        renderTenant();
+        renderOps();
+        bindEvents();
+      }
+
+      function showModal(content) {
+        document.getElementById("modal-card").innerHTML = content;
+        document.getElementById("modal").classList.add("active");
+      }
+
+      function hideModal() {
+        document.getElementById("modal").classList.remove("active");
+      }
+
+      function shareCard(property) {
+        return `
+          <div class="share-card">
+            <div class="eyebrow" style="color:rgba(255,255,255,.72);">Channel Share Card</div>
+            <div class="share-title">${property.name}</div>
+            <div class="muted-white" style="margin-top:10px; line-height:1.75;">
+              ${property.address}<br />
+              ${property.room.suite} · ${property.room.area} sqft · ${money(property.room.rent)}/月
+            </div>
+            <div class="share-grid">
+              <div class="share-cell">
+                <div class="eyebrow" style="color:rgba(255,255,255,.72);">预审结论</div>
+                <div style="margin-top:10px; font-size:18px; font-weight:800;">${property.light === "green" ? "适合继续推进" : property.light === "yellow" ? "可补充再判断" : "当前不建议主推"}</div>
+              </div>
+              <div class="share-cell">
+                <div class="eyebrow" style="color:rgba(255,255,255,.72);">标准付款流程</div>
+                <div style="margin-top:10px; font-size:18px; font-weight:800;">${property.paymentFlow}</div>
+              </div>
+              <div class="share-cell">
+                <div class="eyebrow" style="color:rgba(255,255,255,.72);">费用包含</div>
+                <div style="margin-top:10px; font-size:16px; font-weight:700;">${property.billsIncluded.join("、") || "暂未填写"}</div>
+              </div>
+              <div class="share-cell">
+                <div class="eyebrow" style="color:rgba(255,255,255,.72);">说明</div>
+                <div style="margin-top:10px; font-size:15px; line-height:1.7;">卡片默认不展示平台联系电话，保护渠道转发关系。</div>
+              </div>
+            </div>
+          </div>
+          <div class="actions" style="margin-top:18px;">
+            <button class="btn primary modal-close">关闭</button>
+          </div>
+        `;
+      }
+
+      function paymentHint() {
+        return `
+          <h3>什么是标准付款流程？</h3>
+          <div class="note" style="margin-top:14px;">
+            客户先支付一个月租金作为定金，再用该地址申请公司，公司设立完成后再签正式合同、补足押金，并从正式签约起开始计算房租。
+          </div>
+          <div class="note" style="margin-top:12px;">
+            这样做的原因，是尽量让公司注册资料中的地址与后续租赁地址保持一致，减少平台审核时因为地址前后不一致而被要求额外补件或解释的风险。
+          </div>
+          <div class="actions" style="margin-top:18px;">
+            <button class="btn primary modal-close">我知道了</button>
+          </div>
+        `;
+      }
+
+      function runPrecheckFromInput() {
+        const input = (document.getElementById("addressInput")?.value || "").toLowerCase();
+        if (input.includes("patrick") || input.includes("4701")) {
+          state.activeTemplate = "green";
+        } else if (input.includes("stevenson") || input.includes("4288")) {
+          state.activeTemplate = "yellow";
+        } else if (input.includes("borregas") || input.includes("1250")) {
+          state.activeTemplate = "red";
+        } else {
+          state.activeTemplate = "yellow";
+        }
+        state.precheckAddress = document.getElementById("addressInput").value;
+        render();
+      }
+
+      function bindEvents() {
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.onclick = () => {
+            state.route = tab.dataset.route;
+            render();
+          };
+        });
+
+        document.querySelectorAll("[data-jump]").forEach((node) => {
+          node.onclick = (e) => {
+            e.preventDefault();
+            state.route = node.dataset.jump;
+            render();
+          };
+        });
+
+        document.querySelectorAll(".sample-btn").forEach((btn) => {
+          btn.onclick = () => {
+            state.activeTemplate = btn.dataset.sample;
+            state.precheckAddress = currentProperty().address;
+            render();
+          };
+        });
+
+        document.getElementById("runPrecheck")?.addEventListener("click", runPrecheckFromInput);
+        document.getElementById("paymentHintBtn")?.addEventListener("click", () => showModal(paymentHint()));
+        document.getElementById("openShareCard")?.addEventListener("click", () => showModal(shareCard(currentProperty())));
+
+        document.querySelectorAll(".switch").forEach((btn) => {
+          btn.onclick = () => {
+            const kind = btn.dataset.kind;
+            const key = btn.dataset.key;
+            state[kind][key] = !state[kind][key];
+            render();
+          };
+        });
+
+        document.getElementById("tenantCity")?.addEventListener("change", (e) => {
+          state.filters.city = e.target.value;
+          render();
+        });
+        document.getElementById("tenantPayment")?.addEventListener("change", (e) => {
+          state.filters.paymentFlow = e.target.value;
+          render();
+        });
+        document.getElementById("tenantStatus")?.addEventListener("change", (e) => {
+          state.filters.status = e.target.value;
+          render();
+        });
+
+        document.querySelectorAll(".tenant-detail").forEach((btn) => {
+          btn.onclick = () => {
+            state.selectedTenantId = btn.dataset.id;
+            render();
+          };
+        });
+
+        document.querySelectorAll(".tenant-share").forEach((btn) => {
+          const property = allProperties().find((item) => item.id === btn.dataset.id);
+          btn.onclick = () => showModal(shareCard(property));
+        });
+
+        document.getElementById("unlockLead")?.addEventListener("click", () => {
+          state.leadName = document.getElementById("leadName")?.value || "";
+          state.leadPhone = document.getElementById("leadPhone")?.value || "";
+          if (!state.leadName || !state.leadPhone) return;
+          state.leadUnlocked = true;
+          render();
+        });
+
+        document.querySelectorAll(".ops-approve").forEach((btn) => {
+          btn.onclick = () => {
+            const item = allProperties().find((row) => row.id === btn.dataset.id);
+            item.light = "green";
+            item.score = Math.max(item.score, 78);
+            item.room.status = "可展示";
+            state.opsDecision[item.id] = "已人工放行";
+            render();
+          };
+        });
+
+        document.querySelectorAll(".ops-return").forEach((btn) => {
+          btn.onclick = () => {
+            const item = allProperties().find((row) => row.id === btn.dataset.id);
+            item.room.status = "待补充";
+            state.opsDecision[item.id] = "已退回补充";
+            render();
+          };
+        });
+
+        document.querySelectorAll(".modal-close").forEach((btn) => {
+          btn.onclick = hideModal;
+        });
+
+        document.getElementById("modal").onclick = (e) => {
+          if (e.target.id === "modal") hideModal();
+        };
+      }
+
+      render();
+    </script>
   </body>
 </html>
